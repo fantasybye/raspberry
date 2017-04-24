@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/fantasybye/raspberry/issues"
   },
-  "homepage": "https://github.com/fantasybye/raspberry#readme"
+  "homepage": "https://github.com/fantasybye/raspberry#readme",
+  "dependencies": {
+    "cylon": "^1.3.0",
+    "cylon-firmata": "^0.24.0",
+    "cylon-gpio": "^0.30.1",
+    "cylon-i2c": "^0.26.1",
+    "cylon-mqtt": "^0.8.0",
+    "http": "0.0.0",
+    "mqtt": "^2.6.2",
+    "url": "^0.11.0"
+  }
 }
