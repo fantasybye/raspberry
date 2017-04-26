@@ -3,7 +3,7 @@
 const bluetooth = require('bluetooth-serial-port');
 const localIP = require('./LocalIP');
 
-exports.findDeivce = deivceName => {
+exports.findDeivce = deviceName => {
     const btSerial = new bluetooth.BluetoothSerialPort();
 
     var index = 0;
