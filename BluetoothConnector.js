@@ -3,7 +3,7 @@
 const bluetooth = require('bluetooth-serial-port');
 const localIP = require('./LocalIP');
 
-function findDevice (deviceName) {
+function findDevice(deviceName) {
     const btSerial = new bluetooth.BluetoothSerialPort();
 
     var index = 0;
@@ -16,10 +16,13 @@ function findDevice (deviceName) {
             deviceFound = true;
             btSerial.findSerialPortChannel(address, channel => {
                 console.log('channel found:', address, channel);
+
                 btSerial.connect(address, channel, () => {
                     console.log('connected:', address, channel);
 
-                    btSerial.write(new Buffer(localIP.IPv4, 'utf-8'), (err, bytesWritten) => {
+                    const ip = localIP.IPv4;
+
+                    btSerial.write(new Buffer(ip, 'utf-8'), (err, bytesWritten) => {
                         console.log('send', ip);
                         if (err) {
                             console.log(err);
@@ -29,7 +32,7 @@ function findDevice (deviceName) {
                     btSerial.on('data', buffer => {
                         var data = buffer.toString('utf-8');
                         console.log('receive', data);
-                        if (data === localIP.IPv4) {
+                        if (data === ip) {
                             btSerial.close();
                         }
                     });
