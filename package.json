@@ -18,14 +18,18 @@
   "homepage": "https://github.com/fantasybye/raspberry#readme",
   "dependencies": {
     "bluetooth-serial-port": "^2.1.2",
+    "body-parser": "^1.17.1",
     "cylon": "^1.3.0",
     "cylon-firmata": "^0.24.0",
     "cylon-gpio": "^0.30.1",
     "cylon-i2c": "^0.26.1",
     "cylon-mqtt": "^0.8.0",
+    "express": "^4.15.2",
     "http": "0.0.0",
     "mqtt": "^2.6.2",
     "os": "^0.1.1",
-    "url": "^0.11.0"
+    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "url": "^0.11.0",
+    "uuid": "^3.0.1"
   }
 }
