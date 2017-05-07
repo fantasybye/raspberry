@@ -10,6 +10,10 @@ Object.prototype.forEach = function (callback) {
     Object.keys(this).forEach(func);
 }
 
+exports.toTag = tags => {
+    return tags ? (tags instanceof Array ? tags.join(',') : tags.toString()) : null;
+}
+
 // Object.prototype.map = function* (mapper) {
 //     let func = get.call(this, mapper);
 //     for (let k of Object.keys(this)) {

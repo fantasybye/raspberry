@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('./Schema');
+const utils = require('./Utils');
 
 const DbHelper = require('./DbHelper');
 const sensor = new DbHelper('sensor');
@@ -48,7 +49,7 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             type: typeMap[type],
             title: info.title,
             about: info.about,
-            tags: info.tags ? (info.tags instanceof Array ? info.tags.join(',') : info.tags.toString()) : null
+            tags: utils.toTag(info.tags)
         };
 
         if (type === 'value') {
@@ -118,7 +119,11 @@ exports.update = (apiKey, deviceId, sensorId, info, success, fail) => {
         let updateData = {};
         for (let key of Object.keys(info)) {
             if (infoKeys.includes(key)) {
-                updateData[key] = info[key];
+                if (key === 'tags') {
+                    updateData.tags = utils.toTag(info.tags);
+                } else {
+                    updateData[key] = info[key];
+                }
             }
         }
         if (updateData.title === null) {

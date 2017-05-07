@@ -1,6 +1,7 @@
 'use strict';
 
 const db = require('./Schema');
+const utils = require('./Utils');
 
 const DbHelper = require('./DbHelper');
 const device = new DbHelper('device');
@@ -42,7 +43,7 @@ exports.register = (apiKey, info, success, fail) => {
         longitude: 0
     }
 
-    let tag = info.tags ? (info.tags instanceof Array ? info.tags.join(',') : info.tags.toString()) : null;
+    let tag = utils.toTag(info.tags);
     let location = info.location ? info.location : defaultLocation;
 
     user.checkApiKey(apiKey, () => {
@@ -84,7 +85,7 @@ exports.get = (apiKey, deviceId, success, fail) => {
                 success(info);
             }
         }, fail)
-    , fail);
+        , fail);
 };
 
 exports.all = (apiKey, success, fail) => {
@@ -105,7 +106,7 @@ exports.all = (apiKey, success, fail) => {
             }
             success(devices);
         }, fail)
-    , fail);
+        , fail);
 };
 
 exports.update = (apiKey, deviceId, info, success, fail) => {
@@ -113,7 +114,11 @@ exports.update = (apiKey, deviceId, info, success, fail) => {
         let updateData = {};
         for (let key of Object.keys(info)) {
             if (infoKeys.includes(key)) {
-                updateData[key] = info[key];
+                if (key === 'tags') {
+                    updateData.tags = utils.toTag(info.tags);
+                } else {
+                    updateData[key] = info[key];
+                }
             }
         }
         if (updateData.title === null) {
