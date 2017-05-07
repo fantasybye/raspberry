@@ -84,7 +84,7 @@ exports.get = (apiKey, deviceId, success, fail) => {
                 success(info);
             }
         }, fail)
-    );
+    , fail);
 };
 
 exports.all = (apiKey, success, fail) => {
