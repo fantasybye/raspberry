@@ -105,7 +105,7 @@ exports.all = (apiKey, success, fail) => {
             }
             success(devices);
         }, fail)
-    );
+    , fail);
 };
 
 exports.update = (apiKey, deviceId, info, success, fail) => {
