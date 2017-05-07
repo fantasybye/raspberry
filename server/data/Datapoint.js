@@ -95,7 +95,7 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
                         if (!row) {
                             success({
                                 value: 0,
-                                timestamp: '1970-01-01T08:00:00',
+                                timestamp: toISOTime(0),
                                 sensor_id: sensorId,
                                 device_id: deviceId
                             });
