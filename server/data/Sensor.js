@@ -58,7 +58,7 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             data.unit_symbol = unit.symbol;
         }
 
-        sensor.insert(data, err => {
+        sensor.insert(data, function (err) {
             if (err) {
                 fail(err);
             } else {
