@@ -39,7 +39,7 @@ exports.register = (apiKey, info, success, fail) => {
     const defaultLocation = {
         local: null,
         latitude: 0,
-        longtitude: 0
+        longitude: 0
     }
 
     let tag = info.tags ? (info.tags instanceof Array ? info.tags.join(',') : info.tags.toString()) : null;
@@ -54,7 +54,7 @@ exports.register = (apiKey, info, success, fail) => {
                 tags: tag,
                 local: location.local,
                 latitude: location.latitude,
-                longtitude: location.longtitude
+                longtitude: location.longitude
             },
             function (err) {
                 if (err) {
@@ -79,7 +79,7 @@ exports.get = (apiKey, deviceId, success, fail) => {
                     tags: row.tags,
                     local: row.local,
                     latitude: row.latitude.toString(),
-                    longtitude: row.longtitude.toString()
+                    longitude: row.longtitude.toString()
                 };
                 success(info);
             }
@@ -99,7 +99,7 @@ exports.all = (apiKey, success, fail) => {
                     tags: row.tags,
                     local: row.local,
                     latitude: row.latitude.toString(),
-                    longtitude: row.longtitude.toString()
+                    longitude: row.longtitude.toString()
                 };
                 devices.push(info);
             }
