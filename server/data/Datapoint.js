@@ -93,7 +93,12 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
                         fail(err);
                     } else {
                         if (!row) {
-                            fail('no record');
+                            success({
+                                value: 0,
+                                timestamp: '1970-01-01T08:00:00',
+                                sensor_id: sensorId,
+                                device_id: deviceId
+                            });
                         } else {
                             var isoTime = toISOTime(row.timestamp);
                             success({
