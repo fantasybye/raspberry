@@ -148,7 +148,7 @@ exports.history = (apiKey, deviceId, sensorId, start, end, page, success, fail) 
         let offset = (page - 1) * pageSize;
         let limit = pageSize;
         db.all(
-            'SELECT timestamp, value FROM value_data WHERE timestamp BETWEEN ? AND ? LIMIT ?, ?',
+            'SELECT timestamp, value FROM value_data WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC LIMIT ?, ?',
             [startTime, endTime, offset, limit],
             (err, rows) => {
                 if (err) {
@@ -158,7 +158,7 @@ exports.history = (apiKey, deviceId, sensorId, start, end, page, success, fail) 
                     for (let row of rows) {
                         result.push({ timestamp: toISOTime(row.timestamp), raw: row.timestamp, value: row.value });
                     }
-                    success(result);
+                    success(result.reverse());
                 }
             }
         );
