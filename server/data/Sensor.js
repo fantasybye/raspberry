@@ -7,6 +7,7 @@ const DbHelper = require('./DbHelper');
 const sensor = new DbHelper('sensor');
 
 const device = require('./Device');
+const typeMap = require('./SensorHelper').typeMap;
 
 exports.initialize = () => {
     // sensor
@@ -28,8 +29,6 @@ exports.initialize = () => {
 
 const supportTypes = ['value', 'switcher', 'gps', 'gen', 'photo'];
 const defaultType = 'value';
-
-const typeMap = { 'value': 0, 'swithcer': 5, 'gps': 6, 'gen': 8, 'photo': 9 }
 
 exports.register = (apiKey, deviceId, info, success, fail) => {
     device.checkDevice(apiKey, deviceId, () => {
@@ -75,6 +74,7 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
                 fail({ 'error': 'NO PERMISSION' });
             } else {
                 let info = {
+                    type: row.type,
                     title: row.title,
                     about: row.about,
                     tags: row.tags
@@ -152,11 +152,8 @@ exports.contains = (apiKey, deviceId, sensorId, success, fail) => {
 };
 
 exports.checkSensor = (apiKey, deviceId, sensorId, success, fail) => {
-    exports.contains(apiKey, deviceId, sensorId, result => {
-        if (result) {
-            success();
-        } else {
-            fail({ 'error': 'NOT FOUND' });
-        }
+    exports.get(apiKey, deviceId, sensorId, row => {
+        console.log(JSON.stringify(row));
+        success(row.type);
     }, fail);
 };
