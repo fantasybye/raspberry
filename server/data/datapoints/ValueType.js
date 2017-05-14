@@ -4,7 +4,6 @@ const db = require('../Schema');
 
 const DbHelper = require('../DbHelper');
 const valueData = new DbHelper('value_data');
-const sensor = require('../Sensor');
 
 exports.name = 'value';
 exports.id = 0;
