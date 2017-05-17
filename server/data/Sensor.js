@@ -170,6 +170,12 @@ function getLastestInfos(rows, success, fail) {
                     last_data: data.last_data,
                     last_data_gen: data.last_data_gen
                 };
+
+                if (row.type === 0) {
+                    info.unit_name = row.unit_name;
+                    info.unit_symbol = row.unit_symbol;
+                }
+
                 infos.push(info);
                 if (i < rows.length - 1) {
                     getInfo(rows, i + 1, infos);
