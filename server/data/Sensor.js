@@ -1,11 +1,13 @@
 'use strict';
 
 const db = require('./Schema');
+const utils = require('./Utils');
 
 const DbHelper = require('./DbHelper');
 const sensor = new DbHelper('sensor');
 
 const device = require('./Device');
+const typeMap = require('./SensorHelper').typeMap;
 
 exports.initialize = () => {
     // sensor
@@ -19,16 +21,14 @@ exports.initialize = () => {
         '`tags` VARCHAR(255),' +
         '`unit_name` VARCHAR(100),' +
         '`unit_symbol` REAL,' +
-        '`last_update` INTEGER,' +
-        '`last_data` REAL' +
+        '`last_update` INTEGER,' + // obsoleted
+        '`last_data` REAL' +       // obsoleted
         ')'
     );
 };
 
 const supportTypes = ['value', 'switcher', 'gps', 'gen', 'photo'];
 const defaultType = 'value';
-
-const typeMap = { 'value': 0, 'swithcer': 5, 'gps': 6, 'gen': 8, 'photo': 9 }
 
 exports.register = (apiKey, deviceId, info, success, fail) => {
     device.checkDevice(apiKey, deviceId, () => {
@@ -48,7 +48,7 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             type: typeMap[type],
             title: info.title,
             about: info.about,
-            tags: info.tags ? (info.tags instanceof Array ? info.tags.join(',') : info.tags.toString()) : null
+            tags: utils.toTag(info.tags)
         };
 
         if (type === 'value') {
@@ -57,7 +57,7 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             data.unit_symbol = unit.symbol;
         }
 
-        sensor.insert(data, err => {
+        sensor.insert(data, function (err) {
             if (err) {
                 fail(err);
             } else {
@@ -74,6 +74,7 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
                 fail({ 'error': 'NO PERMISSION' });
             } else {
                 let info = {
+                    type: row.type,
                     title: row.title,
                     about: row.about,
                     tags: row.tags
@@ -93,20 +94,7 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
 exports.all = (apiKey, deviceId, success, fail) => {
     device.checkDevice(apiKey, deviceId, () => {
         sensor.all('*', { device_id: deviceId }, rows => {
-            let infos = [];
-            for (let row of rows) {
-                let info = {
-                    id: row.id,
-                    title: row.title,
-                    about: row.about,
-                    type: row.type.toString(),
-                    last_update: row.last_update ? row.last_update.toString() : null,
-                    last_data: row.last_data ? row.last_data.toString() : null,
-                    last_data_gen: null // unknown
-                };
-                infos.push(info);
-            }
-            success(infos);
+            getLastestInfos(rows, success, fail);
         }, fail);
     }, fail);
 };
@@ -118,7 +106,11 @@ exports.update = (apiKey, deviceId, sensorId, info, success, fail) => {
         let updateData = {};
         for (let key of Object.keys(info)) {
             if (infoKeys.includes(key)) {
-                updateData[key] = info[key];
+                if (key === 'tags') {
+                    updateData.tags = utils.toTag(info.tags);
+                } else {
+                    updateData[key] = info[key];
+                }
             }
         }
         if (updateData.title === null) {
@@ -147,11 +139,76 @@ exports.contains = (apiKey, deviceId, sensorId, success, fail) => {
 };
 
 exports.checkSensor = (apiKey, deviceId, sensorId, success, fail) => {
-    exports.contains(apiKey, deviceId, sensorId, result => {
-        if (result) {
-            success();
-        } else {
-            fail({ 'error': 'NOT FOUND' });
-        }
+    exports.get(apiKey, deviceId, sensorId, row => {
+        console.log(JSON.stringify(row));
+        success(row.type);
     }, fail);
 };
+
+function getLastestInfos(rows, success, fail) {
+    function getInfo(rows, i, infos) {
+        let row = rows[i];
+        getLastestData(
+            row.id,
+            data => {
+                let info = {
+                    id: row.id,
+                    title: row.title,
+                    about: row.about,
+                    type: row.type.toString(),
+                    last_update: data.last_update,
+                    last_data: data.last_data,
+                    last_data_gen: data.last_data_gen
+                };
+                infos.push(info);
+                if (i < rows.length - 1) {
+                    getInfo(rows, i + 1, infos);
+                } else {
+                    success(infos);
+                }
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
+    getInfo(rows, 0, []);
+}
+
+function getLastestData(sensorId, success, fail) {
+    db.get(
+        'SELECT timestamp, value FROM value_data WHERE sensor_id=? ORDER BY timestamp DESC LIMIT 1',
+        sensorId,
+        (err, val_row) => {
+            if (err) {
+                fail(err);
+            } else {
+                db.get(
+                    'SELECT value FROM generic_data WHERE sensor_id=? LIMIT 1',
+                    sensorId,
+                    (err, gen_row) => {
+                        if (err) {
+                            fail(err);
+                        } else {
+                            if (!val_row) {
+                                val_row = {
+                                    timestamp: null,
+                                    value: null
+                                };
+                            }
+                            if (!gen_row) {
+                                gen_row = { value: null };
+                            }
+                            success({
+                                last_update: val_row.timestamp ? val_row.timestamp.toString() : '0',
+                                last_data: val_row.value ? val_row.value.toString() : '0',
+                                last_data_gen: gen_row.value ? JSON.stringify(gen_row.value) : null
+                            });
+                        }
+                    }
+                );
+            }
+        }
+    );
+}
