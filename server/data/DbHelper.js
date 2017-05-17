@@ -4,8 +4,40 @@ const db = require('./Schema');
 require('./Utils');
 
 exports = module.exports = class DbHelper {
-    constructor(table) {
-        this.table = table;
+    constructor(tableName, schema) {
+        this.table = tableName;
+        if (schema) {
+            db.serialize(function () {
+                let cols = [];
+                schema.forEach((col, config) => {
+                    if (typeof config === 'string') {
+                        cols.push(`${col} ${config}`);
+                    } else {
+                        let colDef = `${col} ${config.type} `;
+
+                        if (config.isPK) {
+                            colDef += `PRIMARY KEY ${config.autoIncrement ? 'AUTOINCREMENT' : ''}`;
+                        } else {
+                            let defaultValue = '';
+                            if (config.defaultValue !== undefined) {
+                                defaultValue = 'DEFAULT ';
+                                if (typeof config.defaultValue === 'string') {
+                                    defaultValue += `'${config.defaultValue}'`;
+                                } else {
+                                    defaultValue += config.defaultValue;
+                                }
+                            }
+                            colDef += `${config.notNull ? 'NOT NULL' : ''} ${defaultValue}`;
+                        }
+                        colDef = colDef.replace(/\s+/g, ' ').replace(/\s+$/, '');
+                        cols.push(colDef);
+                    }
+                });
+
+                let tableDef = `CREATE TABLE IF NOT EXISTS ${tableName} (${cols.join(',')})`;
+                db.run(tableDef);
+            });
+        }
     }
 
     insert(data, callback) {
@@ -23,11 +55,15 @@ exports = module.exports = class DbHelper {
     }
 
     contains(conditions, callback) {
-        this.get({ 'count(*)': 'count' }, conditions, row => callback(row.count > 0));
+        this.get('null', conditions, row => callback(!!row));
     }
 
     get(columns, conditions, success, fail) {
-        exec(columns, conditions, (cols, cons, vals) =>
+        exec(columns, conditions, (cols, cons, vals) => {
+            let sql = `SELECT ${cols.join(',')} FROM ${this.table} `;
+            if (cons.length !== 0) {
+                sql += `WHERE ${cons.join(' AND ')}`;
+            }
             db.get(
                 `SELECT ${cols.join(',')} FROM ${this.table} WHERE ${cons.join(' AND ')}`,
                 vals,
@@ -39,25 +75,27 @@ exports = module.exports = class DbHelper {
                         success(row);
                     }
                 }
-            )
-        );
+            );
+        });
     }
 
     all(columns, conditions, success, fail) {
-        exec(columns, conditions, (cols, cons, vals) =>
+        exec(columns, conditions, (cols, cons, vals) => {
+            let sql = `SELECT ${cols.join(',')} FROM ${this.table} `;
+            if (cons.length !== 0) {
+                sql += `WHERE ${cons.join(' AND ')}`;
+            }
             db.all(
-                `SELECT ${cols.join(',')} FROM ${this.table} WHERE ${cons.join(' AND ')}`,
-                vals,
+                sql, vals,
                 (err, rows) => {
                     if (err) {
-                        console.log(err);
                         fail(err);
                     } else {
                         success(rows);
                     }
                 }
-            )
-        );
+            );
+        });
     }
 
     update(updates, conditions, success, fail) {

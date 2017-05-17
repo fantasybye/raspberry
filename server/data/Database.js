@@ -3,6 +3,7 @@
 const db = require('./Schema');
 
 exports.user = require('./User');
+exports.room = require('./Room');
 exports.device = require('./Device');
 exports.sensor = require('./Sensor');
 exports.datapoint = require('./Datapoint');

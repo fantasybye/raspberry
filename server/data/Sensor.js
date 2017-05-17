@@ -7,6 +7,7 @@ const DbHelper = require('./DbHelper');
 const sensor = new DbHelper('sensor');
 
 const device = require('./Device');
+const user = require('./User');
 const typeMap = require('./SensorHelper').typeMap;
 
 exports.initialize = () => {
@@ -91,6 +92,14 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
     }, fail);
 };
 
+exports.allWithoutDeviceId = (apiKey, success, fail) => {
+    user.checkApiKey(apiKey, () => {
+        sensor.all('*', {}, rows => {
+            getLastestInfos(rows, success, fail);
+        }, fail);
+    }, fail);
+};
+
 exports.all = (apiKey, deviceId, success, fail) => {
     device.checkDevice(apiKey, deviceId, () => {
         sensor.all('*', { device_id: deviceId }, rows => {
@@ -153,6 +162,7 @@ function getLastestInfos(rows, success, fail) {
             data => {
                 let info = {
                     id: row.id,
+                    device_id: row.device_id,
                     title: row.title,
                     about: row.about,
                     type: row.type.toString(),

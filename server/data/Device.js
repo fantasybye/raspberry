@@ -7,21 +7,32 @@ const DbHelper = require('./DbHelper');
 const device = new DbHelper('device');
 
 const user = require('./User');
+const room = require('./Room');
 
 exports.initialize = () => {
     // device info
-    db.run(
-        'CREATE TABLE IF NOT EXISTS `device`(' +
-        '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '`api_key` CHAR(32) NOT NULL,' +
-        '`title` VARCHAR(100) NOT NULL,' +
-        '`about` VARCHAR(100),' +
-        '`tags` VARCHAR(255),' +
-        '`local` VARCHAR(100),' +
-        '`latitude` REAL NOT NULL DEFAULT 0,' +
-        '`longtitude` REAL NOT NULL DEFAULT 0' +
-        ')'
-    );
+    db.serialize(function () {
+        db.run(
+            'CREATE TABLE IF NOT EXISTS `device`(' +
+            '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
+            '`api_key` CHAR(32) NOT NULL,' +
+            '`title` VARCHAR(100) NOT NULL,' +
+            '`about` VARCHAR(100),' +
+            '`tags` VARCHAR(255),' +
+            '`local` VARCHAR(100),' +
+            '`latitude` REAL NOT NULL DEFAULT 0,' +
+            '`longtitude` REAL NOT NULL DEFAULT 0' +
+            ')'
+        );
+
+        db.all('PRAGMA table_info(device)', (err, rows) => {
+            if (!err) {
+                if (!rows.some(row => row.name.toLowerCase() === 'room_id')) {
+                    db.run('ALTER TABLE device ADD COLUMN room_id INTEGER');
+                }
+            }
+        });
+    });
 };
 
 const infoKeys = ['title', 'about', 'tags', 'location'];
@@ -78,6 +89,7 @@ exports.get = (apiKey, deviceId, success, fail) => {
                     title: row.title,
                     about: row.about,
                     tags: row.tags,
+                    room_id: row.room_id,
                     local: row.local,
                     latitude: row.latitude.toString(),
                     longitude: row.longtitude.toString()
@@ -98,6 +110,7 @@ exports.all = (apiKey, success, fail) => {
                     title: row.title,
                     about: row.about,
                     tags: row.tags,
+                    room_id: row.room_id,
                     local: row.local,
                     latitude: row.latitude.toString(),
                     longitude: row.longtitude.toString()
@@ -107,6 +120,34 @@ exports.all = (apiKey, success, fail) => {
             success(devices);
         }, fail)
         , fail);
+};
+
+exports.allInRoom = (apiKey, roomId, success, fail) => {
+    user.checkApiKey(apiKey, () => {
+        device.all('*', { api_key: apiKey, room_id: roomId }, rows => {
+            let devices = [];
+            for (let row of rows) {
+                let info = {
+                    id: row.id,
+                    title: row.title,
+                    about: row.about,
+                    tags: row.tags,
+                    local: row.local,
+                    latitude: row.latitude.toString(),
+                    longitude: row.longtitude.toString()
+                };
+                devices.push(info);
+            }
+            success(devices);
+        }, fail);
+    }, fail);
+};
+
+exports.setRoom = (apiKey, roomId, deviceId, success, fail) => {
+    room.checkRoom(apiKey, roomId, () => {
+        console.log('set');
+        device.update({ room_id: roomId }, { api_key: apiKey, id: deviceId }, success, fail);
+    }, fail);
 };
 
 exports.update = (apiKey, deviceId, info, success, fail) => {
