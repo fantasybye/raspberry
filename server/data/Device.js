@@ -35,7 +35,7 @@ exports.initialize = () => {
     });
 };
 
-const infoKeys = ['title', 'about', 'tags', 'location'];
+const infoKeys = ['title', 'about', 'room_id', 'tags', 'location'];
 
 exports.register = (apiKey, info, success, fail) => {
     // require title
@@ -64,6 +64,7 @@ exports.register = (apiKey, info, success, fail) => {
                 title: info.title,
                 about: info.about,
                 tags: tag,
+                room_id: info.room_id,
                 local: location.local,
                 latitude: location.latitude,
                 longtitude: location.longitude
