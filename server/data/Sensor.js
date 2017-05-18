@@ -157,7 +157,7 @@ exports.checkSensor = (apiKey, deviceId, sensorId, success, fail) => {
 function getLastestInfos(rows, success, fail) {
     function getInfo(rows, i, infos) {
         if (i >= rows.length) {
-            success(info);
+            success(infos);
         } else {
             let row = rows[i];
             getLastestData(
