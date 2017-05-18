@@ -156,37 +156,37 @@ exports.checkSensor = (apiKey, deviceId, sensorId, success, fail) => {
 
 function getLastestInfos(rows, success, fail) {
     function getInfo(rows, i, infos) {
-        let row = rows[i];
-        getLastestData(
-            row.id,
-            data => {
-                let info = {
-                    id: row.id,
-                    device_id: row.device_id,
-                    title: row.title,
-                    about: row.about,
-                    type: row.type.toString(),
-                    last_update: data.last_update,
-                    last_data: data.last_data,
-                    last_data_gen: data.last_data_gen
-                };
+        if (i >= rows.length) {
+            success(info);
+        } else {
+            let row = rows[i];
+            getLastestData(
+                row.id,
+                data => {
+                    let info = {
+                        id: row.id,
+                        device_id: row.device_id,
+                        title: row.title,
+                        about: row.about,
+                        type: row.type.toString(),
+                        last_update: data.last_update,
+                        last_data: data.last_data,
+                        last_data_gen: data.last_data_gen
+                    };
 
-                if (row.type === 0) {
-                    info.unit_name = row.unit_name;
-                    info.unit_symbol = row.unit_symbol;
-                }
+                    if (row.type === 0) {
+                        info.unit_name = row.unit_name;
+                        info.unit_symbol = row.unit_symbol;
+                    }
 
-                infos.push(info);
-                if (i < rows.length - 1) {
+                    infos.push(info);
                     getInfo(rows, i + 1, infos);
-                } else {
-                    success(infos);
+                },
+                err => {
+                    console.log(err);
                 }
-            },
-            err => {
-                console.log(err);
-            }
-        );
+            );
+        }
     }
 
     getInfo(rows, 0, []);
