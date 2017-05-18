@@ -97,7 +97,7 @@ exports.start = () => {
         let roomId = req.params.roomId;
         room.delete(
             apiKey, roomId,
-            () => send(''),
+            () => res.send(''),
             err => fail(err, res)
         );
     });
