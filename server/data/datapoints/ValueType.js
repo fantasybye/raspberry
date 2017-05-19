@@ -23,13 +23,13 @@ exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
     if (data instanceof Array) {
         let failed = {};
         for (let i = 0; i < data.length; i++) {
-            let d = info[i];
+            let d = data[i];
             if (!d.value) {
                 failed[i] = "value is required";
                 continue;
             }
 
-            let time = toTime(data.timestamp);
+            let time = toTime(d.timestamp);
             valueData.insert({ sensor_id: sensorId, timestamp: time, value: d.value },
                 err => {
                     if (err) {
