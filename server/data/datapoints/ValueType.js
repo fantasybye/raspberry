@@ -145,7 +145,7 @@ exports.history = (apiKey, deviceId, sensorId, start, end, page, success, fail) 
             } else {
                 let result = [];
                 for (let row of rows) {
-                    result.push({ timestamp: toISOTime(row.timestamp), raw: row.timestamp, value: row.value });
+                    result.push({ timestamp: toISOTime(row.timestamp), value: row.value });
                 }
                 success(result.reverse());
             }
