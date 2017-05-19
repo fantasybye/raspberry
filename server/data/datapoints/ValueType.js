@@ -137,7 +137,7 @@ exports.history = (apiKey, deviceId, sensorId, start, end, page, success, fail) 
     let offset = (page - 1) * pageSize;
     let limit = pageSize;
     db.all(
-        'SELECT timestamp, value FROM value_data WHERE sensor_id=? timestamp BETWEEN ? AND ? ORDER BY timestamp DESC LIMIT ?, ?',
+        'SELECT timestamp, value FROM value_data WHERE sensor_id=? AND timestamp BETWEEN ? AND ? ORDER BY timestamp DESC LIMIT ?, ?',
         [sensorId, startTime, endTime, offset, limit],
         (err, rows) => {
             if (err) {
