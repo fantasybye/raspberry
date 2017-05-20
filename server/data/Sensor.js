@@ -35,8 +35,8 @@ const switcher = require('./datapoints/SwitcherType');
 
 const typeMap = require('./SensorHelper').typeMap;
 
-const supportTypes = ['value', 'switcher', 'gps', 'gen', 'photo'];
-const defaultType = 'value';
+const supportTypes = Object.values(typeMap);
+const defaultType = 0;  // value
 
 exports.register = (apiKey, deviceId, info, success, fail) => {
     device.checkDevice(apiKey, deviceId, () => {
@@ -45,7 +45,13 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             return;
         }
 
-        let type = info.type ? info.type.toLowerCase() : defaultType;
+        let type = info.type;
+        if (type === undefined || type === null) {
+            type = defaultType;
+        }
+        if (typeof type === 'string') {
+            type = typeMap[type.toLowerCase()];
+        }
         if (!supportTypes.includes(type)) {
             fail({ 'error': 'SENSOR TYPE INVALID' });
             return;
@@ -53,13 +59,13 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
 
         let data = {
             device_id: deviceId,
-            type: typeMap[type],
+            type: type,
             title: info.title,
             about: info.about,
             tags: utils.toTag(info.tags)
         };
 
-        if (type === 'value') {
+        if (type === 0) {
             let unit = info.unit ? info.unit : { name: null, symbol: null };
             data.unit_name = unit.name;
             data.unit_symbol = unit.symbol;
