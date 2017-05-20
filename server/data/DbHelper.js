@@ -10,40 +10,7 @@ exports.Db = class DbHelper {
             db.serialize(function () {
                 let cols = [];
                 schema.forEach((col, config) => {
-                    if (typeof config === 'string') {
-                        cols.push(`${col} ${config}`);
-                    } else {
-                        let isPK = false;
-                        let attrs = '';
-                        if (config.attr) {
-                            if (config.attr instanceof Array) {
-                                isPK = config.attr.includes(exports.PK);
-                                attrs = config.attr.join(' ');
-                            } else if (typeof config.attr === 'string') {
-                                isPK = config.attr === exports.PK;
-                                attrs = config.attr;
-                            } else {
-                                throw 'invalid attr';
-                            }
-                        }
-
-                        let colDef = `${col} ${config.type} ${attrs}`;
-
-                        if (!isPK) {
-                            let defaultValue = '';
-                            if (config.defaultValue !== undefined) {
-                                defaultValue = ' DEFAULT ';
-                                if (typeof config.defaultValue === 'string') {
-                                    defaultValue += `'${config.defaultValue}'`;
-                                } else {
-                                    defaultValue += config.defaultValue;
-                                }
-                            }
-                            colDef += defaultValue;
-                        }
-                        colDef = colDef.replace(/\s+/g, ' ').replace(/\s+$/, '');
-                        cols.push(colDef);
-                    }
+                    cols.push(formatColDef(col, config));
                 });
 
                 let tableDef = `CREATE TABLE IF NOT EXISTS ${tableName} (${cols.join(',')})`;
@@ -162,6 +129,42 @@ exports.Db = class DbHelper {
                 }
             })
         );
+    }
+}
+
+function formatColDef(col, config) {
+    if (typeof config === 'string') {
+        return `${col} ${config}`;
+    } else {
+        let isPK = false;
+        let attrs = '';
+        if (config.attr) {
+            if (config.attr instanceof Array) {
+                isPK = config.attr.includes(exports.PK);
+                attrs = config.attr.join(' ');
+            } else if (typeof config.attr === 'string') {
+                isPK = config.attr === exports.PK;
+                attrs = config.attr;
+            } else {
+                throw 'invalid attr';
+            }
+        }
+
+        let colDef = `${col} ${config.type} ${attrs}`;
+
+        if (!isPK) {
+            let defaultValue = '';
+            if (config.defaultValue !== undefined) {
+                defaultValue = ' DEFAULT ';
+                if (typeof config.defaultValue === 'string') {
+                    defaultValue += `'${config.defaultValue}'`;
+                } else {
+                    defaultValue += config.defaultValue;
+                }
+            }
+            colDef += defaultValue;
+        }
+        return colDef.replace(/\s+/g, ' ').replace(/\s+$/, '');
     }
 }
 
