@@ -3,30 +3,37 @@
 const db = require('./Schema');
 const utils = require('./Utils');
 
-const DbHelper = require('./DbHelper');
-const sensor = new DbHelper('sensor');
+const sensor = new Db('sensor', {
+    id: {
+        type: INTEGER,
+        attr: [PK, AUTO_INC]
+    },
+    device_id: {
+        type: INTEGER,
+        attr: NOT_NULL
+    },
+    type: {
+        type: INTEGER,
+        defaultValue: 0
+    },
+    title: {
+        type: VARCHAR(100),
+        attr: NOT_NULL
+    },
+    about: VARCHAR(100),
+    tags: VARCHAR(255),
+    unit_name: VARCHAR(100),
+    unit_symbol: REAL,
+    last_update: INTEGER, // obsoleted
+    last_data: REAL       // obsoleted
+});
 
 const device = require('./Device');
 const user = require('./User');
-const typeMap = require('./SensorHelper').typeMap;
+const datapoint = require('./Datapoint');
+const switcher = require('./datapoints/SwitcherType');
 
-exports.initialize = () => {
-    // sensor
-    db.run(
-        'CREATE TABLE IF NOT EXISTS `sensor`(' +
-        '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '`device_id` INTEGER NOT NULL,' +
-        '`type` INTEGER DEFAULT 0,' +
-        '`title` VARCHAR(100) NOT NULL,' +
-        '`about` VARCHAR(100),' +
-        '`tags` VARCHAR(255),' +
-        '`unit_name` VARCHAR(100),' +
-        '`unit_symbol` REAL,' +
-        '`last_update` INTEGER,' + // obsoleted
-        '`last_data` REAL' +       // obsoleted
-        ')'
-    );
-};
+const typeMap = require('./SensorHelper').typeMap;
 
 const supportTypes = ['value', 'switcher', 'gps', 'gen', 'photo'];
 const defaultType = 'value';
@@ -94,9 +101,26 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
 
 exports.allWithoutDeviceId = (apiKey, success, fail) => {
     user.checkApiKey(apiKey, () => {
-        sensor.all('*', {}, rows => {
-            getLastestInfos(rows, success, fail);
-        }, fail);
+        db.all(`SELECT
+s.id          AS id,
+d.id          AS device_id,
+s.title       AS title,
+s.about       AS about,
+s.type        AS type,
+s.unit_name   AS unit_name,
+s.unit_symbol AS unit_symbol
+FROM device d
+JOIN sensor s ON d.id=s.device_id
+WHERE d.api_key=?`,
+            apiKey,
+            (err, rows) => {
+                if (err) {
+                    fail(err);
+                } else {
+                    getLastestInfos(rows, success, fail);
+                }
+            }
+        );
     }, fail);
 };
 
@@ -117,6 +141,14 @@ exports.update = (apiKey, deviceId, sensorId, info, success, fail) => {
             if (infoKeys.includes(key)) {
                 if (key === 'tags') {
                     updateData.tags = utils.toTag(info.tags);
+                } else if (key === 'unit') {
+                    if (info.unit !== null) {
+                        updateData.unit_name = info.unit.name;
+                        updateData.unit_symbol = info.unit.symbol;
+                    } else {
+                        updateData.unit_name = null;
+                        updateData.unit_symbol = null;
+                    }
                 } else {
                     updateData[key] = info[key];
                 }
@@ -149,7 +181,6 @@ exports.contains = (apiKey, deviceId, sensorId, success, fail) => {
 
 exports.checkSensor = (apiKey, deviceId, sensorId, success, fail) => {
     exports.get(apiKey, deviceId, sensorId, row => {
-        console.log(JSON.stringify(row));
         success(row.type);
     }, fail);
 };
@@ -162,6 +193,7 @@ function getLastestInfos(rows, success, fail) {
             let row = rows[i];
             getLastestData(
                 row.id,
+                row.type,
                 data => {
                     let info = {
                         id: row.id,
@@ -177,6 +209,8 @@ function getLastestInfos(rows, success, fail) {
                     if (row.type === 0) {
                         info.unit_name = row.unit_name;
                         info.unit_symbol = row.unit_symbol;
+                    } else if (row.type === 5) {
+                        info.last_state = data.last_state;
                     }
 
                     infos.push(info);
@@ -192,39 +226,60 @@ function getLastestInfos(rows, success, fail) {
     getInfo(rows, 0, []);
 }
 
-function getLastestData(sensorId, success, fail) {
-    db.get(
-        'SELECT timestamp, value FROM value_data WHERE sensor_id=? ORDER BY timestamp DESC LIMIT 1',
-        sensorId,
-        (err, val_row) => {
-            if (err) {
-                fail(err);
-            } else {
-                db.get(
-                    'SELECT value FROM generic_data WHERE sensor_id=? LIMIT 1',
-                    sensorId,
-                    (err, gen_row) => {
-                        if (err) {
-                            fail(err);
-                        } else {
-                            if (!val_row) {
-                                val_row = {
-                                    timestamp: null,
-                                    value: null
-                                };
-                            }
-                            if (!gen_row) {
-                                gen_row = { value: null };
-                            }
-                            success({
-                                last_update: val_row.timestamp ? val_row.timestamp.toString() : '0',
-                                last_data: val_row.value ? val_row.value.toString() : '0',
-                                last_data_gen: gen_row.value ? JSON.stringify(gen_row.value) : null
-                            });
+function getLastestData(sensorId, type, success, fail) {
+    let result = { last_update: '0', last_data: '0', last_data_gen: null, last_state: 0 };
+    console.log(sensorId);
+    switch (type) {
+        case 0: //value
+            db.get(
+                'SELECT timestamp, value FROM value_data WHERE sensor_id=? ORDER BY timestamp DESC LIMIT 1',
+                sensorId,
+                (err, row) => {
+                    if (err) {
+                        fail(err);
+                    } else {
+                        if (row) {
+                            result.last_update = row.timestamp.toString();
+                            result.last_data = row.value.toString();
                         }
+                        success(result);
                     }
-                );
-            }
-        }
-    );
+                }
+            );
+            break;
+
+        case 5: // switcher
+            db.get(
+                'SELECT state FROM switcher_data WHERE sensor_id=? ORDER BY timestamp DESC LIMIT 1',
+                sensorId,
+                (err, row) => {
+                    if (err) {
+                        fail(err);
+                    } else {
+                        if (row) {
+                            result.last_state = row.state;
+                        }
+                        success(result);
+                    }
+                }
+            );
+            break;
+
+        case 8: // generic
+            db.get(
+                'SELECT value FROM generic_data WHERE sensor_id=? ORDER BY ID DESC LIMIT 1',
+                sensorId,
+                (err, row) => {
+                    if (err) {
+                        fail(err);
+                    } else {
+                        if (row) {
+                            result.last_data_gen = JSON.stringify(row.value);
+                        }
+                        success(result);
+                    }
+                }
+            );
+            break;
+    }
 }

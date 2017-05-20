@@ -1,23 +1,29 @@
 'use strict';
 
 const db = require('../Schema');
+const utils = require('../Utils');
 
-const DbHelper = require('../DbHelper');
-const valueData = new DbHelper('value_data');
+const valueData = new Db('value_data', {
+    id: {
+        type: INTEGER,
+        attr: [PK, AUTO_INC]
+    },
+    sensor_id: {
+        type: INTEGER,
+        attr: NOT_NULL
+    },
+    timestamp: {
+        type: INTEGER,
+        attr: NOT_NULL
+    },
+    value: {
+        type: REAL,
+        attr: NOT_NULL
+    }
+});
 
 exports.name = 'value';
 exports.id = 0;
-
-exports.initialize = () => {
-    db.run(
-        'CREATE TABLE IF NOT EXISTS `value_data`(' +
-        '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '`sensor_id` INTEGER NOT NULL,' +
-        '`timestamp` INTEGER NOT NULL,' +
-        '`value` REAL NOT NULL' +
-        ')'
-    );
-};
 
 exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
     if (data instanceof Array) {
@@ -29,7 +35,7 @@ exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
                 continue;
             }
 
-            let time = toTime(d.timestamp);
+            let time = utils.toTime(d.timestamp);
             valueData.insert({ sensor_id: sensorId, timestamp: time, value: d.value },
                 err => {
                     if (err) {
@@ -50,7 +56,7 @@ exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
             return;
         }
 
-        let time = toTime(data.timestamp);
+        let time = utils.toTime(data.timestamp);
         valueData.insert({ sensor_id: sensorId, timestamp: time, value: data.value },
             err => {
                 if (err) {
@@ -69,7 +75,7 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
             'value',
             {
                 sensor_id: sensorId,
-                timestamp: toTime(timestamp)
+                timestamp: utils.toTime(timestamp)
             },
             row => {
                 if (row) {
@@ -91,12 +97,12 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
                     if (!row) {
                         success({
                             value: 0,
-                            timestamp: toISOTime(0),
+                            timestamp: utils.toISOTime(0),
                             sensor_id: sensorId,
                             device_id: deviceId
                         });
                     } else {
-                        var isoTime = toISOTime(row.timestamp);
+                        var isoTime = utils.toISOTime(row.timestamp);
                         success({
                             timestamp: isoTime,
                             value: row.value,
@@ -113,7 +119,7 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
 exports.update = (apiKey, deviceId, sensorId, timestamp, value, success, fail) => {
     valueData.update(
         { value: value },
-        { sensor_id: sensorId, timestamp: toTime(timestamp) },
+        { sensor_id: sensorId, timestamp: utils.toTime(timestamp) },
         success,
         fail
     );
@@ -121,7 +127,7 @@ exports.update = (apiKey, deviceId, sensorId, timestamp, value, success, fail) =
 
 exports.delete = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
     valueData.delete(
-        { sensor_id: sensorId, timestamp: toTime(timestamp) },
+        { sensor_id: sensorId, timestamp: utils.toTime(timestamp) },
         success,
         fail
     );
@@ -145,26 +151,10 @@ exports.history = (apiKey, deviceId, sensorId, start, end, page, success, fail) 
             } else {
                 let result = [];
                 for (let row of rows) {
-                    result.push({ timestamp: toISOTime(row.timestamp), value: row.value });
+                    result.push({ timestamp: utils.toISOTime(row.timestamp), value: row.value });
                 }
                 success(result.reverse());
             }
         }
     );
 };
-
-
-const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-
-function toTime(isoTime) {
-    let time = isoTime
-        ? (new Date(isoTime).getTime() + timeZoneOffset)
-        : new Date().getTime();
-    return Math.floor(time / 1000);
-}
-
-function toISOTime(time) {
-    return new Date(time * 1000 - timeZoneOffset)
-        .toISOString()
-        .replace(/\..*$/, '');
-}

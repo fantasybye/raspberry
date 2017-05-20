@@ -3,26 +3,25 @@
 const db = require('./Schema');
 const utils = require('./Utils');
 
-const DbHelper = require('./DbHelper');
-const room = new DbHelper('room', {
+const room = new Db('room', {
     id: {
-        type: 'INTEGER',
-        isPK: true,
-        autoIncrement: true
+        type: INTEGER,
+        attr: [PK, AUTO_INC]
     },
     api_key: {
-        type: 'CHAR(32)',
-        notNull: true
+        type: CHAR(32),
+        attr: NOT_NULL
     },
     title: {
-        type: 'VARCHAR(100)',
-        notNull: true
+        type: VARCHAR(100),
+        attr: NOT_NULL
     },
-    about: 'VARCHAR(255)',
-    tags: 'VARCHAR(255)'
+    about: VARCHAR(255),
+    tags: VARCHAR(255)
 });
 
 const user = require('./User');
+const device = require('./Device');
 
 exports.register = (apiKey, info, success, fail) => {
     user.checkApiKey(apiKey, () => {
@@ -98,7 +97,9 @@ exports.update = (apiKey, roomId, info, success, fail) => {
 
 exports.delete = (apiKey, roomId, success, fail) => {
     user.checkApiKey(apiKey, () => {
-        room.delete({ id: roomId, api_key: apiKey }, success, fail);
+        room.delete({ id: roomId, api_key: apiKey }, () => {
+            device.removeAllFromRoom(apikey, roomId, success, fail);
+        }, fail);
     }, fail);
 };
 

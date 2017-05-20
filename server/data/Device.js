@@ -3,37 +3,47 @@
 const db = require('./Schema');
 const utils = require('./Utils');
 
-const DbHelper = require('./DbHelper');
-const device = new DbHelper('device');
+const device = new Db('device', {
+    id: {
+        type: INTEGER,
+        attr: [PK, AUTO_INC]
+    },
+    api_key: {
+        type: CHAR(32),
+        attr: NOT_NULL
+    },
+    title: {
+        type: VARCHAR(100),
+        attr: NOT_NULL
+    },
+    about: VARCHAR(255),
+    tags: VARCHAR(255),
+    local: VARCHAR(100),
+    latitude: {
+        type: REAL,
+        attr: NOT_NULL,
+        defaultValue: 0
+    },
+    longtitude: {
+        type: REAL,
+        attr: NOT_NULL,
+        defaultValue: 0
+    }
+});
 
 const user = require('./User');
 const room = require('./Room');
+const sensor = require('./Sensor');
 
-exports.initialize = () => {
-    // device info
-    db.serialize(function () {
-        db.run(
-            'CREATE TABLE IF NOT EXISTS `device`(' +
-            '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
-            '`api_key` CHAR(32) NOT NULL,' +
-            '`title` VARCHAR(100) NOT NULL,' +
-            '`about` VARCHAR(100),' +
-            '`tags` VARCHAR(255),' +
-            '`local` VARCHAR(100),' +
-            '`latitude` REAL NOT NULL DEFAULT 0,' +
-            '`longtitude` REAL NOT NULL DEFAULT 0' +
-            ')'
-        );
-
-        db.all('PRAGMA table_info(device)', (err, rows) => {
-            if (!err) {
-                if (!rows.some(row => row.name.toLowerCase() === 'room_id')) {
-                    db.run('ALTER TABLE device ADD COLUMN room_id INTEGER');
-                }
+db.serialize(function () {
+    db.all('PRAGMA table_info(device)', (err, rows) => {
+        if (!err) {
+            if (!rows.some(row => row.name.toLowerCase() === 'room_id')) {
+                db.run('ALTER TABLE device ADD COLUMN room_id INTEGER');
             }
-        });
+        }
     });
-};
+});
 
 const infoKeys = ['title', 'about', 'room_id', 'tags', 'location'];
 
@@ -169,6 +179,10 @@ exports.update = (apiKey, deviceId, info, success, fail) => {
             device.update(updateData, { id: deviceId, api_key: apiKey }, success, fail);
         }
     }, fail);
+};
+
+exports.removeAllFromRoom = (apiKey, roomId, success, fail) => {
+    device.update({ room_id: null }, { api_key: apiKey, room_id: roomId }, success, fail);
 };
 
 exports.delete = (apiKey, deviceId, success, fail) => {

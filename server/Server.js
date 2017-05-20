@@ -10,6 +10,7 @@ exports.start = () => {
     const device = db.device;
     const sensor = db.sensor;
     const datapoint = db.datapoint;
+    const switcher = require('./data/datapoints/SwitcherType');
 
     const app = express();
 
@@ -20,8 +21,6 @@ exports.start = () => {
     app.listen(3000, function () {
         console.log('server started');
     });
-
-    db.initialize();
 
     function fail(err, res) {
         console.log(err);
@@ -309,6 +308,14 @@ exports.start = () => {
         let key = req.params.key;
         datapoint.delete(apiKey, deviceId, sensorId, key,
             () => res.send(''),
+            err => fail(err, res)
+        );
+    });
+
+    app.get('/commands', (req, res) => {
+        let apiKey = getApiKey(req);
+        switcher.allUnfetched(apiKey,
+            data => res.send(JSON.stringify(data)),
             err => fail(err, res)
         );
     });

@@ -42,3 +42,19 @@ function get(func) {
         ? k => func({ key: k, value: this[k] })
         : k => func(k, this[k]);
 }
+
+
+const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+
+exports.toTime = function (isoTime) {
+    let time = isoTime
+        ? (new Date(isoTime).getTime() + timeZoneOffset)
+        : new Date().getTime();
+    return Math.floor(time / 1000);
+}
+
+exports.toISOTime = function (time) {
+    return new Date(time * 1000 - timeZoneOffset)
+        .toISOString()
+        .replace(/\..*$/, '');
+}

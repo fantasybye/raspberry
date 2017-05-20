@@ -2,22 +2,24 @@
 
 const db = require('../Schema');
 
-const DbHelper = require('../DbHelper');
-const genericData = new DbHelper('generic_data');
+const genericData = new Db('generic_data', {
+    id: {
+        type: INTEGER,
+        attr: [PK, AUTO_INC]
+    },
+    sensor_id: {
+        type: INTEGER,
+        attr: NOT_NULL
+    },
+    key: {
+        type: VARCHAR(255),
+        attr: NOT_NULL
+    },
+    value: TEXT
+});
 
 exports.name = 'gen';
 exports.id = 8;
-
-exports.initialize = () => {
-    db.run(
-        'CREATE TABLE IF NOT EXISTS `generic_data`(' +
-        '`id` INTEGER PRIMARY KEY AUTOINCREMENT,' +
-        '`sensor_id` INTEGER NOT NULL,' +
-        '`key` VARCHAR(128) NOT NULL,' +
-        '`value` TEXT' +
-        ')'
-    );
-};
 
 exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
     let key = data.key;
@@ -62,10 +64,7 @@ exports.get = (apiKey, deviceId, sensorId, key, success, fail) => {
                     }
                 }
             }
-        )
-        genericData.all(['key', 'value'], { sensor_id: sensorId }, rows => {
-
-        });
+        );
     }
 };
 

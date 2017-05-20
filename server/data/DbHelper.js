@@ -3,7 +3,7 @@
 const db = require('./Schema');
 require('./Utils');
 
-exports = module.exports = class DbHelper {
+exports.Db = class DbHelper {
     constructor(tableName, schema) {
         this.table = tableName;
         if (schema) {
@@ -13,21 +13,33 @@ exports = module.exports = class DbHelper {
                     if (typeof config === 'string') {
                         cols.push(`${col} ${config}`);
                     } else {
-                        let colDef = `${col} ${config.type} `;
+                        let isPK = false;
+                        let attrs = '';
+                        if (config.attr) {
+                            if (config.attr instanceof Array) {
+                                isPK = config.attr.includes(exports.PK);
+                                attrs = config.attr.join(' ');
+                            } else if (typeof config.attr === 'string') {
+                                isPK = config.attr === exports.PK;
+                                attrs = config.attr;
+                            } else {
+                                throw 'invalid attr';
+                            }
+                        }
 
-                        if (config.isPK) {
-                            colDef += `PRIMARY KEY ${config.autoIncrement ? 'AUTOINCREMENT' : ''}`;
-                        } else {
+                        let colDef = `${col} ${config.type} ${attrs}`;
+
+                        if (!isPK) {
                             let defaultValue = '';
                             if (config.defaultValue !== undefined) {
-                                defaultValue = 'DEFAULT ';
+                                defaultValue = ' DEFAULT ';
                                 if (typeof config.defaultValue === 'string') {
                                     defaultValue += `'${config.defaultValue}'`;
                                 } else {
                                     defaultValue += config.defaultValue;
                                 }
                             }
-                            colDef += `${config.notNull ? 'NOT NULL' : ''} ${defaultValue}`;
+                            colDef += defaultValue;
                         }
                         colDef = colDef.replace(/\s+/g, ' ').replace(/\s+$/, '');
                         cols.push(colDef);
@@ -203,3 +215,45 @@ function exec(columns, conditions, callback) {
 
     callback(cols, cons, vals);
 }
+
+Object.defineProperties(exports, {
+    PK: {
+        value: 'PRIMARY KEY',
+        enumerable: true
+    },
+    AUTO_INC: {
+        value: 'AUTOINCREMENT',
+        enumerable: true
+    },
+    NOT_NULL: {
+        value: 'NOT NULL',
+        enumerable: true
+    },
+    UNIQUE: {
+        value: 'UNIQUE',
+        enumerable: true
+    }
+});
+
+const typeList = ['INTEGER', 'REAL', 'TEXT', 'BLOB'];
+const sizeableTypeList = ['CHAR', 'VARCHAR'];
+
+let propDef = {};
+for (let type of typeList) {
+    propDef[type] = { value: type, enumerable: true };
+}
+
+for (let type of sizeableTypeList) {
+    propDef[type] = {
+        value: function (size) {
+            if (Number.isInteger(size) && size > 0) {
+                return `${type}(${size})`;
+            } else {
+                throw 'size should be a positive integer';
+            }
+        },
+        enumerable: true
+    }
+}
+
+Object.defineProperties(exports, propDef);

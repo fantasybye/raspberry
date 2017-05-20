@@ -3,12 +3,8 @@
 const sensor = require('./Sensor');
 const helper = require('./SensorHelper');
 
-// support value data and generic type
-exports.initialize = () => {
-    helper.dbs.forEach(database => {
-        database.initialize();
-    });
-};
+// support value type, switcher type and generic type
+exports.initialize = () => { };
 
 exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
     getDataBase(apiKey, deviceId, sensorId, database => {
