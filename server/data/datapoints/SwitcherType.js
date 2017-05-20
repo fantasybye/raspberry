@@ -35,6 +35,18 @@ exports.name = 'switcher';
 exports.id = 5;
 
 exports.add = (apiKey, deviceId, sensorId, info, success, fail) => {
+    if (!info || info.state === undefined || info.state === null) {
+        if (info.value !== undefined || info.value !== null) {
+            fail({ 'ERROR': 'switcher use state instead of value' });
+        } else {
+            fail({ 'ERROR': 'state is required' });
+        }
+        return;
+    } else if (Number.isInteger(info.state)) {
+        fail({ 'ERROR': 'state should be integer' });
+        return;
+    }
+
     let state = info.state;
     let time = utils.toTime();
     switcherData.insert({ device_id: deviceId, sensor_id: sensorId, timestamp: time, state: state },
@@ -124,7 +136,14 @@ WHERE exists (SELECT null FROM device d WHERE d.api_key=? AND d.id=switcher_data
 
 exports.update = (apiKey, deviceId, sensorId, _, info, success, fail) => {
     if (!info || info.state === undefined) {
-        fail({ 'ERROR': 'state is required' });
+        if (info.value !== undefined || info.value !== null) {
+            fail({ 'ERROR': 'switcher use state instead of value' });
+        } else {
+            fail({ 'ERROR': 'state is required' });
+        }
+        return;
+    } else if (Number.isInteger(info.state)) {
+        fail({ 'ERROR': 'state should be integer' });
         return;
     }
     let time = utils.toTime();

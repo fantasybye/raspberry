@@ -26,13 +26,20 @@ exports.name = 'value';
 exports.id = 0;
 
 exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
+    function checkValue(value) {
+        if (value === undefined || value === null) {
+            return 'value is required';
+        } else if (typeof value !== 'number') {
+            return 'value should be number';
+        }
+    }
     if (data instanceof Array) {
         let failed = {};
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
-            if (!d.value) {
-                failed[i] = "value is required";
-                continue;
+            let err = checkValue(d.value);
+            if (err) {
+                failed[i] = { 'ERROR': err };
             }
 
             let time = utils.toTime(d.timestamp);
@@ -51,8 +58,9 @@ exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
             fail(failed);
         }
     } else {
-        if (!data.value) {
-            fail("value is required");
+        let err = checkValue(d.value);
+        if (err) {
+            failed({ 'ERROR': err });
             return;
         }
 
