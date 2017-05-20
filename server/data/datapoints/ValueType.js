@@ -60,7 +60,7 @@ exports.add = (apiKey, deviceId, sensorId, data, success, fail) => {
     } else {
         let err = checkValue(data.value);
         if (err) {
-            failed({ 'ERROR': err });
+            fail({ 'ERROR': err });
             return;
         }
 
