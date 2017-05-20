@@ -122,9 +122,13 @@ WHERE exists (SELECT null FROM device d WHERE d.api_key=? AND d.id=switcher_data
     )
 };
 
-exports.update = (apiKey, deviceId, sensorId, _, state, success, fail) => {
+exports.update = (apiKey, deviceId, sensorId, _, info, success, fail) => {
+    if (!info || info.state === undefined) {
+        fail({ 'ERROR': 'state is required' });
+        return;
+    }
     let time = utils.toTime();
-    switcherData.insert({ device_id: deviceId, sensor_id: sensorId, timestamp: time, state: state, fetched: 1 },
+    switcherData.insert({ device_id: deviceId, sensor_id: sensorId, timestamp: time, state: info.state, fetched: 1 },
         err => {
             if (err) {
                 fail(err);

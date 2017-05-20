@@ -267,7 +267,7 @@ exports.start = () => {
         let deviceId = req.params.deviceId;
         let sensorId = req.params.sensorId;
         let key = req.params.key;
-        let value = req.body.value;
+        let value = req.body;
         datapoint.update(apiKey, deviceId, sensorId, key, value,
             () => res.send(''),
             err => fail(err, res)

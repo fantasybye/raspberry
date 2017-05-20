@@ -116,9 +116,9 @@ exports.get = (apiKey, deviceId, sensorId, timestamp, success, fail) => {
     }
 };
 
-exports.update = (apiKey, deviceId, sensorId, timestamp, value, success, fail) => {
+exports.update = (apiKey, deviceId, sensorId, timestamp, info, success, fail) => {
     valueData.update(
-        { value: value },
+        { value: info.value },
         { sensor_id: sensorId, timestamp: utils.toTime(timestamp) },
         success,
         fail

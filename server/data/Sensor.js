@@ -228,7 +228,6 @@ function getLastestInfos(rows, success, fail) {
 
 function getLastestData(sensorId, type, success, fail) {
     let result = { last_update: '0', last_data: '0', last_data_gen: null, last_state: 0 };
-    console.log(sensorId);
     switch (type) {
         case 0: //value
             db.get(

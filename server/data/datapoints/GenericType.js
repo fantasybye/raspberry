@@ -68,9 +68,9 @@ exports.get = (apiKey, deviceId, sensorId, key, success, fail) => {
     }
 };
 
-exports.update = (apiKey, deviceId, sensorId, key, value, success, fail) => {
+exports.update = (apiKey, deviceId, sensorId, key, info, success, fail) => {
     genericData.update(
-        { value: JSON.stringify(value) },
+        { value: JSON.stringify(info.value) },
         { sensor_id: sensorId, key: key },
         success,
         fail
