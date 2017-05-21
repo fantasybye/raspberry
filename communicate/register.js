@@ -5,12 +5,14 @@ var rp = require('request-promise');
 var userregister = require('./userregister');
 var deviceregister = require('./deviceregister');
 var sensorregister = require('./sensorregister');
+var sensordelete = require('./sensordelete');
+var devicedelete = require('./devicedelete');
 
 var readchoice = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-readchoice.question('What do you want to do: 1.register user, 2.register device or sensor, or input exit to leave\n', (answer) => {
+readchoice.question('What do you want to do: 1.register user, 2.register or delete device or sensor, or input exit to leave\n', (answer) => {
   switch (answer)
   {
     case '1':
@@ -80,7 +82,7 @@ function deviceorsensor(key) {
     input: process.stdin,
     output: process.stdout
   });
-  readdors.question('register: 1.device, 2.sensor, or exit to leave\n', (answer) => {
+  readdors.question('please select: 1.register device, 2.register sensor, 3.delete device from all, 4.delete sensor from all, or exit to leave\n', (answer) => {
     switch (answer)
     {
       case '1':
@@ -91,6 +93,15 @@ function deviceorsensor(key) {
         readdors.close();
         sensorregister.sensorRegister(key);
         break;
+      case '3':
+        readdors.close();
+        devicedelete.deviceDelete(key);
+        break;
+      case '4':
+        readdors.close();
+        //sensordelete.sensorDelete(key);
+        sensordevice(key);
+        break;
       case 'exit':
         readdors.close();
         break;
@@ -100,4 +111,23 @@ function deviceorsensor(key) {
     }
   });
   
+}
+
+function sensordevice(key) {
+  var readsendev = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  readsendev.question('please input the id of the device which the sensor you want to delete belongs to, or input exit to leave\n', (answer) => {
+    switch (answer)
+    {
+      case 'exit':
+        readsendev.close();
+        break;
+      default:
+        readsendev.close();
+        sensordelete.sensorDelete(Number(answer), key);
+        break;
+    }
+  });
 }
