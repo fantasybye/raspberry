@@ -1,46 +1,40 @@
 <template>
-  <div id="wrapper">
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <!--<a class="navbar-brand" href="#">-->
-          <!--<i class="glyphicon glyphicon-time"></i>-->
-          <!--计划板-->
-        <!--</a>-->
-        <ul class="nav navbar-nav">
-          <li><router-link to="/home"> 首页</router-link></li>
-          <li><router-link to="/show-devices">设备列表</router-link></li>
-          <!--<li><router-link to="/login">登录</router-link></li>-->
-          <!--<li><router-link to="/register">注册</router-link></li>-->
-        </ul>
-      </div>
-    </nav>
-    <div class="container">
-      <!--<div class="col-sm-3">-->
-        <!--<sidebar></sidebar>-->
-      <!--</div>-->
-      <div class="col-sm-12">
-        <router-view></router-view>
-      </div>
-    </div>
+  <div id="app">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-  // import Sidebar from './components/Sidebar';
 
   export default {
     name: 'app',
-    // components: { sidebar: Sidebar },
   };
 </script>
 
-<!--<style>-->
-<!--#app {-->
-  <!--font-family: 'Avenir', Helvetica, Arial, sans-serif;-->
-  <!-- -webkit-font-smoothing: antialiased;-->
-  <!-- -moz-osx-font-smoothing: grayscale;-->
-  <!--text-align: center;-->
-  <!--color: #2c3e50;-->
-  <!--margin-top: 60px;-->
-<!--}-->
-<!--</style>-->
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+  }
+  body,html{
+    width: 100%;
+    height: 100%;
+    /* background: rgba(7,17,27,0.96); */
+  }
+  a {
+    text-decoration: none;
+    /* color: #333; */
+  }
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+  }
+  .fade-out-enter-active, .fade-out-leave-active {
+    transition: all .5s
+  }
+  .fade-out-enter, .fade-out-leave-active {
+    opacity: 0;
+    transform: translateX(-400px);
+  }
+</style>

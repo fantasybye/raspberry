@@ -11,6 +11,11 @@
     <div v-if="$route.path === '/show-devices/show-sensors/add-sensor'">
       <h3>增加一个新传感器</h3>
     </div>
+    <div v-if="$route.path ==='/show-devices/show-sensors/show-data'" class="col-sm-12">
+      <p>
+        <label>tips：传感器动态数据每3秒刷新一次</label>
+      </p>
+    </div>
     <hr>
     <!--<router-view></router-view>-->
     <div class="show-sensors">
@@ -25,7 +30,7 @@
         <a v-for="(sensor,index) in sensors">
           <div class="row list-group-item">
             <div class="col-sm-2 details">
-              <img src="../assets/sensor.png" class="avatar img-circle img-responsive" />
+              <img src="../../assets/sensor.png" class="avatar img-circle img-responsive" />
               <p class="text-center">
                 <strong> {{ sensor.name }}</strong>
               </p>
@@ -54,7 +59,6 @@
               删除该传感器
             </button>
             <router-link
-              v-if="$route.path !== '/show-devices/show-sensors/edit-sensor'"
               :to="{path:'/show-devices/show-sensors/edit-sensor',query:{id:index}}"
               class="btn btn-xs btn-primary device-button">
               编辑该传感器

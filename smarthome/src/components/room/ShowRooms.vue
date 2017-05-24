@@ -1,51 +1,46 @@
 <template>
   <div>
-     <!--`v-if`是 vue 的一个指令-->
-     <!--`$route.path`是当前路由对象的路径，会被解析为绝对路径当-->
-     <!--`$route.path !== '/time-entries/log-time'`为`true`是显示，`false`，为不显示。-->
-     <!--to 路由跳转地址-->
-
     <router-link
-      v-if="$route.path === '/show-devices'"
-      to="/show-devices/add-device"
+      v-if="$route.path === '/show-rooms'"
+      to="/show-rooms/add-room"
       class="btn btn-primary">
-      增加一个新设备
+      增加一个新房间
     </router-link>
 
-    <div v-if="$route.path === '/show-devices/add-device'">
-      <h3>增加一个新设备</h3>
+    <div v-if="$route.path === '/show-rooms/add-room'">
+      <h3>增加一个新房间</h3>
     </div>
-    <div v-if="$route.path === '/show-devices/edit-device'">
-      <h3>编辑该设备</h3>
+    <div v-if="$route.path === '/show-rooms/edit-room'">
+      <h3>编辑该房间</h3>
     </div>
     <hr>
     <!--<router-view></router-view>-->
     <div>
-      <p v-if="!devices.length&&$route.path === '/show-devices'"><strong>还没有任何设备</strong></p>
+      <p v-if="!rooms.length&&$route.path === '/show-rooms'"><strong>还没有任何房间</strong></p>
       <div class="list-group">
         <router-view></router-view>
       </div>
-      <div v-if="$route.path === '/show-devices'" class="list-group">
+      <div v-if="$route.path === '/show-rooms'" class="list-group">
         <!--
         v-for 循环，注意参数顺序为(item,index) in items
         -->
-        <a v-for="(device,index) in devices">
+        <a v-for="(room,index) in rooms">
           <div class="row list-group-item">
             <div class="col-sm-2 details">
-              <img src="../assets/sensor.png" class="avatar img-circle img-responsive" />
+              <img src="../../assets/room.png" class="avatar img-circle img-responsive" />
               <p class="text-center">
-                <strong> {{ device.name }}</strong>
+                <strong> {{ room.name }}</strong>
               </p>
             </div>
 
             <div class="col-sm-8">
               <p class="comment-section">
-                <strong> 设备id：</strong>
-                {{ device.id }}
+                <strong> 房间id：</strong>
+                {{ room.id }}
               </p>
               <p class="comment-section">
-                <strong> 设备介绍：</strong>
-                {{ device.comment }}
+                <strong> 房间介绍：</strong>
+                {{ room.comment }}
               </p>
             </div>
 
@@ -53,19 +48,18 @@
           <div class="row button-row">
             <button
               class="btn btn-xs btn-danger device-button"
-              @click="deleteDevice(index)">
-              删除该设备
+              @click="deleteRoom(index)">
+              删除该房间
             </button>
             <router-link
-              v-if="$route.path !== '/show-devices/edit-device'"
-              :to="{path:'/show-devices/edit-device',query:{id:index}}"
+              :to="{path:'/show-rooms/edit-room',query:{id:index}}"
               class="btn btn-xs btn-primary device-button">
-              编辑该设备
+              编辑该房间
             </router-link>
             <router-link
-              :to="{path:'/show-devices/show-sensors',query:{id:index}}"
+              :to="{path:'/show-devices',query:{id:index}}"
               class="btn btn-xs btn-success device-button">
-              查看传感器
+              查看房间设备
             </router-link>
           </div>
           <hr>
@@ -77,16 +71,15 @@
 
 <script>
   export default{
-    name: 'ShowDevices',
     computed: {
-      devices() {
-        return this.$store.state.devList;
+      rooms() {
+        return this.$store.state.roomList;
       },
     },
     methods: {
-      deleteDevice(idx) {
+      deleteRoom(idx) {
         // 删除该设备
-        this.$store.dispatch('deleteDevice', idx);
+        this.$store.dispatch('deleteRoom', idx);
       },
     },
 //    created() {
@@ -98,7 +91,7 @@
     mounted() {
       const vm = this;
       vm.$nextTick(() => {
-        vm.$store.dispatch('showDevice');
+        vm.$store.dispatch('showRoom');
       });
     },
 //    watch: {

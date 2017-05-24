@@ -1,9 +1,17 @@
 <template>
   <div class="form-horizontal">
     <div class="form-group">
-      <div class="col-sm-8">
+      <div class="col-sm-6">
         <label>设备名称</label>
         <input type="text" class="form-control" v-model="name" placeholder="Name">
+      </div>
+      <div class="col-sm-6">
+        <label>房间选择</label>
+        <select v-model="room" class="form-control">
+          <option v-for="room in rooms" :value="room.id">
+            {{ room.name }}
+          </option>
+        </select>
       </div>
     </div>
     <div class="form-group">
@@ -26,12 +34,18 @@
         comment: '',
       };
     },
+    computed: {
+      rooms() {
+        return this.$store.state.roomList;
+      },
+    },
     methods: {
       save() {
         if (this.name === '' || this.name.trim() === '') {
           alert('设备名不能为空！'); // eslint-disable-line
         } else {
           const device = {
+            roomid: this.room,
             name: this.name,
             comment: this.comment,
           };

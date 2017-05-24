@@ -4,6 +4,18 @@
 import * as types from './mutations-type';
 
 export default {
+  saveRoom({ commit }, room) {
+    commit(types.SAVE_ROOM, room);
+  },
+  deleteRoom({ commit }, idx) {
+    commit(types.DELETE_ROOM, idx);
+  },
+  editRoom({ commit }, room) {
+    commit(types.EDIT_ROOM, room);
+  },
+  showRoom({ commit }) {
+    commit(types.SHOW_ROOM);
+  },
   saveDevice({ commit }, device) {
     commit(types.SAVE_DEVICE, device);
   },
@@ -13,8 +25,11 @@ export default {
   editDevice({ commit }, devid) {
     commit(types.EDIT_DEVICE, devid);
   },
-  showDevice({ commit }) {
-    commit(types.SHOW_DEVICE);
+  showDevice({ commit }, idx) {
+    commit(types.SHOW_DEVICE, idx);
+  },
+  copyDevice({ commit }, device) {
+    commit(types.COPY_DEVICE, device);
   },
   showSensor({ commit }, idx) {
     commit(types.SHOW_SENSOR, idx);
@@ -28,7 +43,22 @@ export default {
   editSensor({ commit }, sensor) {
     commit(types.EDIT_SENSOR, sensor);
   },
-  showData({ commit }) {
-    commit(types.SHOW_DATA);
+  showData({ commit }, sensor) {
+    commit(types.SHOW_DATA, sensor);
+  },
+  saveSwitch({ commit }, nswitch) {
+    commit(types.SAVE_SWITCH, nswitch);
+  },
+  deleteSwitch({ commit }, idx) {
+    commit(types.DELETE_SWITCH, idx);
+  },
+  showSwitch({ commit }) {
+    commit(types.SHOW_SWITCH);
+  },
+  onSwitch({ commit }, idx) {
+    commit(types.ON_SWITCH, idx);
+  },
+  offSwitch({ commit }, idx) {
+    commit(types.OFF_SWITCH, idx);
   },
 };
