@@ -4,19 +4,20 @@ const uuid = require('uuid/v4');
 
 const db = require('./Schema');
 
-const DbHelper = require('./DbHelper');
-const user = new DbHelper('user');
-
-exports.initialize = () => {
-    // user & api key
-    db.run(
-        'CREATE TABLE IF NOT EXISTS `user`(' +
-        '`api_key` CHAR(32) NOT NULL PRIMARY KEY,' +
-        '`username` VARCHAR(100) NOT NULL UNIQUE,' +
-        '`password` VARCHAR(100) NOT NULL' +
-        ')'
-    );
-};
+const user = new Db('user', {
+    api_key: {
+        type: CHAR(32),
+        attr: PK
+    },
+    username: {
+        type: VARCHAR(100),
+        attr: [NOT_NULL, UNIQUE]
+    },
+    password: {
+        type: VARCHAR(100),
+        attr: NOT_NULL
+    }
+});
 
 exports.register = (username, password, success, fail) => {
     let apiKey = createApiKey();

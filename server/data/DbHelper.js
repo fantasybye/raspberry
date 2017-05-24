@@ -3,9 +3,20 @@
 const db = require('./Schema');
 require('./Utils');
 
-exports = module.exports = class DbHelper {
-    constructor(table) {
-        this.table = table;
+exports.Db = class DbHelper {
+    constructor(tableName, schema) {
+        this.table = tableName;
+        if (schema) {
+            db.serialize(function () {
+                let cols = [];
+                schema.forEach((col, config) => {
+                    cols.push(formatColDef(col, config));
+                });
+
+                let tableDef = `CREATE TABLE IF NOT EXISTS ${tableName} (${cols.join(',')})`;
+                db.run(tableDef);
+            });
+        }
     }
 
     insert(data, callback) {
@@ -23,11 +34,15 @@ exports = module.exports = class DbHelper {
     }
 
     contains(conditions, callback) {
-        this.get({ 'count(*)': 'count' }, conditions, row => callback(row.count > 0));
+        this.get('null', conditions, row => callback(!!row));
     }
 
     get(columns, conditions, success, fail) {
-        exec(columns, conditions, (cols, cons, vals) =>
+        exec(columns, conditions, (cols, cons, vals) => {
+            let sql = `SELECT ${cols.join(',')} FROM ${this.table} `;
+            if (cons.length !== 0) {
+                sql += `WHERE ${cons.join(' AND ')}`;
+            }
             db.get(
                 `SELECT ${cols.join(',')} FROM ${this.table} WHERE ${cons.join(' AND ')}`,
                 vals,
@@ -39,25 +54,27 @@ exports = module.exports = class DbHelper {
                         success(row);
                     }
                 }
-            )
-        );
+            );
+        });
     }
 
     all(columns, conditions, success, fail) {
-        exec(columns, conditions, (cols, cons, vals) =>
+        exec(columns, conditions, (cols, cons, vals) => {
+            let sql = `SELECT ${cols.join(',')} FROM ${this.table} `;
+            if (cons.length !== 0) {
+                sql += `WHERE ${cons.join(' AND ')}`;
+            }
             db.all(
-                `SELECT ${cols.join(',')} FROM ${this.table} WHERE ${cons.join(' AND ')}`,
-                vals,
+                sql, vals,
                 (err, rows) => {
                     if (err) {
-                        console.log(err);
                         fail(err);
                     } else {
                         success(rows);
                     }
                 }
-            )
-        );
+            );
+        });
     }
 
     update(updates, conditions, success, fail) {
@@ -115,6 +132,42 @@ exports = module.exports = class DbHelper {
     }
 }
 
+function formatColDef(col, config) {
+    if (typeof config === 'string') {
+        return `${col} ${config}`;
+    } else {
+        let isPK = false;
+        let attrs = '';
+        if (config.attr) {
+            if (config.attr instanceof Array) {
+                isPK = config.attr.includes(exports.PK);
+                attrs = config.attr.join(' ');
+            } else if (typeof config.attr === 'string') {
+                isPK = config.attr === exports.PK;
+                attrs = config.attr;
+            } else {
+                throw 'invalid attr';
+            }
+        }
+
+        let colDef = `${col} ${config.type} ${attrs}`;
+
+        if (!isPK) {
+            let defaultValue = '';
+            if (config.defaultValue !== undefined) {
+                defaultValue = ' DEFAULT ';
+                if (typeof config.defaultValue === 'string') {
+                    defaultValue += `'${config.defaultValue}'`;
+                } else {
+                    defaultValue += config.defaultValue;
+                }
+            }
+            colDef += defaultValue;
+        }
+        return colDef.replace(/\s+/g, ' ').replace(/\s+$/, '');
+    }
+}
+
 function createParam(length) {
     let param = new Array(length);
     param.fill('?');
@@ -165,3 +218,45 @@ function exec(columns, conditions, callback) {
 
     callback(cols, cons, vals);
 }
+
+Object.defineProperties(exports, {
+    PK: {
+        value: 'PRIMARY KEY',
+        enumerable: true
+    },
+    AUTO_INC: {
+        value: 'AUTOINCREMENT',
+        enumerable: true
+    },
+    NOT_NULL: {
+        value: 'NOT NULL',
+        enumerable: true
+    },
+    UNIQUE: {
+        value: 'UNIQUE',
+        enumerable: true
+    }
+});
+
+const typeList = ['INTEGER', 'REAL', 'TEXT', 'BLOB'];
+const sizeableTypeList = ['CHAR', 'VARCHAR'];
+
+let propDef = {};
+for (let type of typeList) {
+    propDef[type] = { value: type, enumerable: true };
+}
+
+for (let type of sizeableTypeList) {
+    propDef[type] = {
+        value: function (size) {
+            if (Number.isInteger(size) && size > 0) {
+                return `${type}(${size})`;
+            } else {
+                throw 'size should be a positive integer';
+            }
+        },
+        enumerable: true
+    }
+}
+
+Object.defineProperties(exports, propDef);
