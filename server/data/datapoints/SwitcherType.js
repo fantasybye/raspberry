@@ -42,7 +42,7 @@ exports.add = (apiKey, deviceId, sensorId, info, success, fail) => {
             fail({ 'ERROR': 'state is required' });
         }
         return;
-    } else if (Number.isInteger(info.state)) {
+    } else if (!Number.isInteger(info.state)) {
         fail({ 'ERROR': 'state should be integer' });
         return;
     }

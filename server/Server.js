@@ -208,7 +208,8 @@ exports.start = () => {
     app.get('/device/:deviceId/sensors', (req, res) => {
         let apiKey = getApiKey(req);
         let deviceId = req.params.deviceId;
-        sensor.all(apiKey, deviceId,
+        let type = req.query.type;
+        sensor.all(apiKey, deviceId, type, 
             infos => res.send(JSON.stringify(infos)),
             err => fail(err, res)
         );
@@ -240,8 +241,10 @@ exports.start = () => {
     // all
     app.get('/sensors', (req, res) => {
         let apiKey = getApiKey(req);
+        let type = req.query.type;
         sensor.allWithoutDeviceId(
             apiKey,
+            type,
             infos => res.send(JSON.stringify(infos)),
             err => fail(err, res)
         );

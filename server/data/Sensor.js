@@ -105,9 +105,16 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
     }, fail);
 };
 
-exports.allWithoutDeviceId = (apiKey, success, fail) => {
-    user.checkApiKey(apiKey, () => {
-        db.all(`SELECT
+exports.allWithoutDeviceId = (apiKey, type, success, fail) => {
+    if (!Number.isInteger(type)) {
+        type = typeMap[type];
+        if (type === undefined) {
+            fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
+            return;
+        }
+    }
+
+    let sql = `SELECT
 s.id          AS id,
 d.id          AS device_id,
 s.title       AS title,
@@ -117,8 +124,17 @@ s.unit_name   AS unit_name,
 s.unit_symbol AS unit_symbol
 FROM device d
 JOIN sensor s ON d.id=s.device_id
-WHERE d.api_key=?`,
-            apiKey,
+WHERE d.api_key=?`;
+    let filters = [apikey];
+
+    if (type !== undefined) {
+        sql += ` AND type=?`;
+        filters.push(type);
+    }
+
+    user.checkApiKey(apiKey, () => {
+        db.all(sql,
+            filters,
             (err, rows) => {
                 if (err) {
                     fail(err);
@@ -130,9 +146,22 @@ WHERE d.api_key=?`,
     }, fail);
 };
 
-exports.all = (apiKey, deviceId, success, fail) => {
+exports.all = (apiKey, deviceId, type, success, fail) => {
+    let filter = { device_id: deviceId };
+
+    if (type !== undefined) {
+		if (!Number.isInteger(type)) {
+		    type = typeMap[type];
+		    if (type === undefined) {
+		        fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
+		        return;
+		    }
+		}
+        filter.type = type;
+    }
+
     device.checkDevice(apiKey, deviceId, () => {
-        sensor.all('*', { device_id: deviceId }, rows => {
+        sensor.all('*', filter, rows => {
             getLastestInfos(rows, success, fail);
         }, fail);
     }, fail);
