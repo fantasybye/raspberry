@@ -98,7 +98,7 @@ exports.update = (apiKey, roomId, info, success, fail) => {
 exports.delete = (apiKey, roomId, success, fail) => {
     user.checkApiKey(apiKey, () => {
         room.delete({ id: roomId, api_key: apiKey }, () => {
-            device.removeAllFromRoom(apikey, roomId, success, fail);
+            device.removeAllFromRoom(apiKey, roomId, success, fail);
         }, fail);
     }, fail);
 };
