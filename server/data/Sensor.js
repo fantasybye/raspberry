@@ -123,7 +123,8 @@ JOIN sensor s ON d.id=s.device_id
 WHERE d.api_key=?`;
     let filters = [apiKey];
 
-    if (type !== undefined || type !== null || type !== "") {
+    console.log(type, typeof type);
+    if (type !== undefined && type !== null && type !== "") {
         let t = parseInt(type);
 	    if (!Number.isInteger(t)) {
 	        type = typeMap[type];
@@ -155,7 +156,8 @@ WHERE d.api_key=?`;
 exports.all = (apiKey, deviceId, type, success, fail) => {
     let filters = { device_id: deviceId };
 
-    if (type !== undefined || type !== null || type !== "") {
+    console.log(type, typeof type);
+    if (type !== undefined && type !== null && type !== "") {
         let t = parseInt(type);
 	    if (!Number.isInteger(t)) {
 	        type = typeMap[type];
