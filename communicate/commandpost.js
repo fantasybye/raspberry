@@ -21,7 +21,7 @@ exports.commandPost = function(deviceid, sensorid, sensordata) {
       state: sensordata,
     },
     headers: {
-      'U-ApiKey': '7b253b049d2b4288b1a695e7c1d364de',
+      'U-ApiKey': '76b37232b161425dbf789cb128d8d487',
       'Content-Type': 'application/json',
       //'Content-Length': bodyStr.length,
     },

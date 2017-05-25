@@ -35,14 +35,17 @@ exports.updateChannel = function(key) {
         input: process.stdin,
         output: process.stdout
       });
-      console.log('Which channel do you want to update, please input the name and the device of it as name.deviceid, or input exit to leave');
+      console.log('Which channel do you want to update, please input the name and the device of it as channelname.deviceid, or input exit to leave');
       readchannel.on('line', (input) => {
         if(input === 'exit') {
           readchannel.close();
         }else{
-          var inputname = input.split(".")[0].replace(/\s+/g,"");
+          //var inputname = input.split(".")[0].replace(/\s+/g,"");
           //console.log(inputname);
-          var inputid = input.split(".")[1].replace(/\s+/g,"");
+          //var inputid = input.split(".")[1].replace(/\s+/g,"");
+          var inputname = input.split(".")[0];
+          //console.log(inputname);
+          var inputid = input.split(".")[1];
           console.log(inputid);
           for(var i = 0; i < allchannels.length; i++) {
             var one = allchannels[i];

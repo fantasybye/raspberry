@@ -52,12 +52,14 @@ exports.addSensor = function(channelname, deviceid, channeltype, key) {
     db.all(getarray, function(err, res) {
       if(!err) {
         var savedarray = res[0].sensorarray;
-        savedarray = eval('('+savedarray+')');
-        for(var saved of savedarray) {
-          var savedid = saved.id;
-          var savedduty = saved.duty;
-          var savedtype = saved.type;
-          addsensors.push({id:`${savedid}`,duty:`${savedduty}`,type:`${savedtype}`});
+        if(savedarray === undefined) {
+          savedarray = eval('('+savedarray+')');
+          for(var saved of savedarray) {
+            var savedid = saved.id;
+            var savedduty = saved.duty;
+            var savedtype = saved.type;
+            addsensors.push({id:`${savedid}`,duty:`${savedduty}`,type:`${savedtype}`});
+          }
         }
         readsensor.on('line', (input) => {
       
@@ -81,9 +83,12 @@ exports.addSensor = function(channelname, deviceid, channeltype, key) {
             }
         
           }else {
-            var inputid = input.split(".")[0].replace(/\s+/g,"");
-            var inputduty = input.split(".")[1].replace(/\s+/g,"");
-            var inputtype = input.split(".")[2].replace(/\s+/g,"");
+            //var inputid = input.split(".")[0].replace(/\s+/g,"");
+            //var inputduty = input.split(".")[1].replace(/\s+/g,"");
+            //var inputtype = input.split(".")[2].replace(/\s+/g,"");
+            var inputid = input.split(".")[0];
+            var inputduty = input.split(".")[1];
+            var inputtype = input.split(".")[2];
             //console.log('inputid:'+inputid);
             for(var i = 0; i < sen_idtypeduty.length; i++) {
               var thesensor = sen_idtypeduty[i];

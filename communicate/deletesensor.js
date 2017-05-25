@@ -37,9 +37,12 @@ exports.deleteSensor = function(channelname, deviceid) {
         db.close();
         readsensor.close();
       }else{
-        var deleteid = input.split(".")[0].replace(/\s+/g,"");
-        var deleteduty = input.split(".")[1].replace(/\s+/g,"");
-        var deletetype = input.split(".")[2].replace(/\s+/g,"");
+        //var deleteid = input.split(".")[0].replace(/\s+/g,"");
+        //var deleteduty = input.split(".")[1].replace(/\s+/g,"");
+        //var deletetype = input.split(".")[2].replace(/\s+/g,"");
+        var deleteid = input.split(".")[0];
+        var deleteduty = input.split(".")[1];
+        var deletetype = input.split(".")[2];
         for(var i = 0; i < existsensors.length; i++) {
           if((deleteid === existsensors[i].id) && (deleteduty === existsensors[i].duty) && (deletetype === existsensors[i].type)) {
             console.log('prepare to delete the sensor');
