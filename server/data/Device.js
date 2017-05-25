@@ -168,6 +168,10 @@ exports.update = (apiKey, deviceId, info, success, fail) => {
             if (infoKeys.includes(key)) {
                 if (key === 'tags') {
                     updateData.tags = utils.toTag(info.tags);
+                } else if (key === 'location') {
+                    updateData.local = info.location;
+                    updateData.latitude = info.latitude;
+                    updateData.longtitude = info.longitude;
                 } else {
                     updateData[key] = info[key];
                 }
