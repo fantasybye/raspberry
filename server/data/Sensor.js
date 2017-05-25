@@ -75,7 +75,11 @@ exports.register = (apiKey, deviceId, info, success, fail) => {
             if (err) {
                 fail(err);
             } else {
-                success(this.lastID);
+                if (type === 5 && info.state !== undefined) {
+                    switcher.add(apiKey, deviceId, this.lastID, { state: info.state }, () => success(this.lastID), fail);
+                } else {
+                    success(this.lastID);
+                }
             }
         });
     }, fail);
@@ -106,14 +110,6 @@ exports.get = (apiKey, deviceId, sensorId, success, fail) => {
 };
 
 exports.allWithoutDeviceId = (apiKey, type, success, fail) => {
-    if (!Number.isInteger(type)) {
-        type = typeMap[type];
-        if (type === undefined) {
-            fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
-            return;
-        }
-    }
-
     let sql = `SELECT
 s.id          AS id,
 d.id          AS device_id,
@@ -125,10 +121,20 @@ s.unit_symbol AS unit_symbol
 FROM device d
 JOIN sensor s ON d.id=s.device_id
 WHERE d.api_key=?`;
-    let filters = [apikey];
+    let filters = [apiKey];
 
-    if (type !== undefined) {
-        sql += ` AND type=?`;
+    if (type !== undefined || type !== null || type !== "") {
+        let t = parseInt(type);
+	    if (!Number.isInteger(t)) {
+	        type = typeMap[type];
+	    } else {
+            type = t;
+        }
+        if (type === undefined || !supportTypes.includes(type)) {
+            fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
+	        return;
+        }
+        sql += ' AND type=?';
         filters.push(type);
     }
 
@@ -147,21 +153,24 @@ WHERE d.api_key=?`;
 };
 
 exports.all = (apiKey, deviceId, type, success, fail) => {
-    let filter = { device_id: deviceId };
+    let filters = { device_id: deviceId };
 
-    if (type !== undefined) {
-		if (!Number.isInteger(type)) {
-		    type = typeMap[type];
-		    if (type === undefined) {
-		        fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
-		        return;
-		    }
-		}
-        filter.type = type;
+    if (type !== undefined || type !== null || type !== "") {
+        let t = parseInt(type);
+	    if (!Number.isInteger(t)) {
+	        type = typeMap[type];
+	    } else {
+            type = t;
+        }
+        if (type === undefined || !supportTypes.includes(type)) {
+            fail({ 'ERROR': 'UNKNOWN SENSOR TYPE' });
+	        return;
+        }
+        filters.type = type;
     }
 
     device.checkDevice(apiKey, deviceId, () => {
-        sensor.all('*', filter, rows => {
+        sensor.all('*', filters, rows => {
             getLastestInfos(rows, success, fail);
         }, fail);
     }, fail);
