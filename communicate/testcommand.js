@@ -1,5 +1,5 @@
 
 var commandpost = require('./commandpost');
 
-commandpost.commandPost(1, 4, 'on');
-commandpost.commandPost(2, 8, 'off');
+commandpost.commandPost(14, 15, 0);
+//commandpost.commandPost(2, 8, 0);

@@ -8,7 +8,7 @@ Cylon.robot({
   },
   
   work: function(my) {
-    my.clientpub.subscribe('pubchannelone');
+    my.clientpub.subscribe('pubchanneltoday');
     my.clientpub.subscribe('pubchannelten');
 
     my.clientpub.on('message', function(topic, data) {

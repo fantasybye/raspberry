@@ -50,7 +50,7 @@ Cylon.robot({
     function senddirection(key) {
       every((5).seconds(), function() {
         directionget.directionGet(key, function(result) {
-          //console.log(result);
+          console.log(result);
 
           findpubchannel(function(channels) {
             for(var command of result) {
@@ -77,6 +77,13 @@ Cylon.robot({
                 if(deviceid === saveddevice && sensorid === savedsensorid) {
                   //if(sensorid === savedsensorid) {
                     console.log('send');
+                    if(direction === 1) {
+                      direction = 'on';
+                    }else{
+                      if(direction === 0){
+                        direction = 'off';
+                      }
+                    }
                     my.directionserver.publish(channels[i].channelname, direction);
                     break;
                   //}
