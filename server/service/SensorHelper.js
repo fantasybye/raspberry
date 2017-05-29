@@ -12,6 +12,8 @@ datapoints.forEach(db => {
     dbMap[name] = dbMap[id] = db;
 });
 
-exports.typeMap = typeMap;
-exports.dbMap = dbMap;
-exports.dbs = datapoints;
+exports = module.exports = {
+    typeMap: typeMap,
+    servMap: dbMap,
+    services: datapoints
+}
