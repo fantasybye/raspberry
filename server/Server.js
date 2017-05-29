@@ -17,9 +17,10 @@ exports.start = async () => {
     function fail(err, res) {
         console.error(err);
         if (err instanceof Error) {
-            err = err.message;
+            res.status(500).send(err.message);
+        } else {
+            res.send(JSON.stringify(err));
         }
-        res.send(JSON.stringify(err));
     }
 
     function getApiKey(req) {
