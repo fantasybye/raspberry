@@ -17,7 +17,7 @@ export default {
         tags: ['temperature', 'lab'],
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -38,7 +38,7 @@ export default {
       method: 'DELETE',
       url: `/apis/room/${id}`,
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     });
@@ -53,7 +53,7 @@ export default {
         tags: ['temperature', 'lab'],
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then(() => {
@@ -72,7 +72,7 @@ export default {
       method: 'GET',
       url: '/apis/rooms',
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -116,7 +116,7 @@ export default {
         },
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -140,7 +140,7 @@ export default {
       method: 'DELETE',
       url: `/apis/device/${id}`,
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
 
@@ -167,7 +167,7 @@ export default {
         },
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -192,7 +192,7 @@ export default {
         method: 'GET',
         url: '/apis/devices',
         headers: {
-          'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+          'U-ApiKey': sessionStorage.apikey,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
@@ -223,7 +223,7 @@ export default {
         method: 'GET',
         url: `/apis/room/${rid}/devices`,
         headers: {
-          'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+          'U-ApiKey': sessionStorage.apikey,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
@@ -268,7 +268,7 @@ export default {
         },
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -297,7 +297,7 @@ export default {
           },
         },
         headers: {
-          'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+          'U-ApiKey': sessionStorage.apikey,
           'Content-Type': 'application/json',
         },
       }).then((response2) => {
@@ -325,7 +325,7 @@ export default {
               },
             },
             headers: {
-              'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+              'U-ApiKey': sessionStorage.apikey,
               'Content-Type': 'application/json',
             },
           });
@@ -350,7 +350,7 @@ export default {
         },
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -376,7 +376,7 @@ export default {
       method: 'DELETE',
       url: `/apis/device/${devid}/sensor/${senid}`,
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -392,7 +392,7 @@ export default {
         method: 'GET',
         url: '/apis/sensors',
         headers: {
-          'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+          'U-ApiKey': sessionStorage.apikey,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
@@ -427,7 +427,7 @@ export default {
         method: 'GET',
         url: `/apis/device/${devid}/sensors`,
         headers: {
-          'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+          'U-ApiKey': sessionStorage.apikey,
           'Content-Type': 'application/json',
         },
       }).then((response) => {
@@ -474,7 +474,7 @@ export default {
         },
       },
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
@@ -502,7 +502,7 @@ export default {
       method: 'GET',
       url: `/apis/device/${devid}/sensor/${senid}.json?start=2017-05-19T00:00:00&end=2017-05-19T23:59:59&interval=1&page=1`,
       headers: {
-        'U-ApiKey': 'cd9cece70ad24efeb04a31749eb8e39f',
+        'U-ApiKey': sessionStorage.apikey,
         'Content-Type': 'application/json',
       },
     }).then((response) => {

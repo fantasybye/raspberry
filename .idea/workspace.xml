@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b79421ba-1762-46b0-8f6a-07d64923d2cd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/raspberry.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/smarthome/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/conf/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/conf/nginx.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/dao/UserDao.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/dao/UserDao.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/build/build.js" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/build/build.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/build/webpack.base.conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/build/webpack.base.conf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/config/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/config/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/src/components/UI/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/src/components/UI/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/src/components/user/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/src/components/user/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smarthome/src/store/mutations.js" beforeDir="false" afterPath="$PROJECT_DIR$/smarthome/src/store/mutations.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="ProjectId" id="1hoSPG2bYT0IVh3UioVP0nEBpnz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../iseplan-yangzhou" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2020.2.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager" selected="Node.js.index.js">
+    <configuration name="Server.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/server/Server.js" working-dir="$PROJECT_DIR$/server">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/server/service/index.js" working-dir="$PROJECT_DIR$/server/service">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.index.js" />
+        <item itemvalue="Node.js.Server.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b79421ba-1762-46b0-8f6a-07d64923d2cd" name="Default Changelist" comment="" />
+      <created>1600675925707</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1600675925707</updated>
+      <workItem from="1600675926767" duration="2295000" />
+      <workItem from="1600734500645" duration="2976000" />
+      <workItem from="1601208368439" duration="23000" />
+      <workItem from="1617866508852" duration="679000" />
+      <workItem from="1617966530303" duration="2708000" />
+      <workItem from="1617974601387" duration="1129000" />
+      <workItem from="1618192382155" duration="3075000" />
+      <workItem from="1618210500087" duration="524000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="562" y="300" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1618193522214">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="562" y="300" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050/-1920.-130.1920.1050@0.0.1920.1050" timestamp="1618193522214" />
+    <state width="1899" height="166" key="GridCell.Tab.0.bottom" timestamp="1617975730963">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1899" height="166" key="GridCell.Tab.0.bottom/0.0.1920.1050/-1920.-130.1920.1050@0.0.1920.1050" timestamp="1617975730963" />
+    <state width="1899" height="166" key="GridCell.Tab.0.center" timestamp="1617975730963">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1899" height="166" key="GridCell.Tab.0.center/0.0.1920.1050/-1920.-130.1920.1050@0.0.1920.1050" timestamp="1617975730963" />
+    <state width="1899" height="166" key="GridCell.Tab.0.left" timestamp="1617975730963">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1899" height="166" key="GridCell.Tab.0.left/0.0.1920.1050/-1920.-130.1920.1050@0.0.1920.1050" timestamp="1617975730963" />
+    <state width="1899" height="166" key="GridCell.Tab.0.right" timestamp="1617975730963">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1899" height="166" key="GridCell.Tab.0.right/0.0.1920.1050/-1920.-130.1920.1050@0.0.1920.1050" timestamp="1617975730963" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/smarthome/src/router/index.js</url>
+          <line>18</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

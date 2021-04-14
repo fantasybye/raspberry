@@ -20,10 +20,10 @@
           <input type="password" id="confirmpassword" placeholder="确认密码" v-model="confirmpassword">
         </div>
         <div class="button">
-          <a class="gv" href="javascript:;" @click="Register()">注册</a>
+          <a class="gv" href="javascript:" @click="Register">注册</a>
         </div>
         <div class="toregist">
-          已有账号？<router-link to="/login"><a href="javascript:;">去登录</a></router-link>
+          已有账号？<router-link to="/login"><a href="javascript:">去登录</a></router-link>
         </div>
       </form>
     </div>
@@ -74,7 +74,7 @@
         this.$ajax({
           method: 'POST',
           url: '/apis/register',
-          body: {
+          data: {
             username: this.username,
             password: this.password,
           },

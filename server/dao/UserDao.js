@@ -27,6 +27,7 @@ exports = module.exports = {
             return apiKey;
         } catch (err) {
             console.error(err);
+            console.log(username,password)
             throw 'register failed';
         }
 
